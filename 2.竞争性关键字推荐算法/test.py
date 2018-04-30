@@ -13,3 +13,8 @@ print(dic)
 dic1 = {'a', 'b', 'c'}
 dic2 = {'a', 'b', 'd'}
 print(dic1 & dic2)
+
+for i in dic:
+    print(i)
+
+print(1/3)

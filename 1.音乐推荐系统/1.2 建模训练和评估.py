@@ -90,7 +90,9 @@ print(grid_search.best_params['FCP'])
 # >>> {'reg_all': 0.6, 'lr_all': 0.005, 'n_epochs': 10}
 
 '''
+    ##########################################
     1.用协同过滤构建模型并进行预测movielens的例子
+    ##########################################
 '''
 
 # 可以使用上面提到的各种推荐系统算法
@@ -203,7 +205,9 @@ for movie in toy_story_neighbors:
 '''
 
 '''
+    ###############
     2.音乐预测的例子
+    ###############
 '''
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 import os
@@ -305,3 +309,140 @@ for playlist in playlist_neighbors:
     打开任意门，就有对的人 42
     行车路上，一曲长歌 45
 '''
+
+'''
+    ######################
+    3.模板之针对用户进行预测
+    ######################
+'''
+import pickle
+
+# 歌曲id->歌曲名 的映射字典
+song_id_name_dic = pickle.load(open("popular_song.pkl", "rb"))
+print("加载歌曲id到歌曲名的映射字典完成...")
+
+# 歌曲名->歌曲id 的映射字典
+song_name_id_dic = {}
+for song_id in song_id_name_dic:
+    song_name_id_dic[song_id_name_dic[song_id]] = song_id
+print("加载歌曲名到歌曲id的映射字典完成...")
+
+# 内部编码的4号用户（即歌单）
+user_inner_id = 4
+# 取出该歌单对于所有歌曲的打分
+user_rating = trainset.ur[user_inner_id]
+# 找出所有非零打分歌曲
+items = map(lambda x: x[0], user_rating)
+# 遍历所有非零歌曲，计算预测的该用户对于这些歌曲的打分
+for song in items:
+    print(algo.predict(user_inner_id, song, r_ui=1), song_id_name_dic[algo.trainset.to_raw_iid(song)])
+
+'''
+    ###################
+    4.用矩阵分解进行预测
+    ###################
+'''
+
+# 使用NMF
+from surprise import NMF, evaluate
+from surprise import Dataset
+
+file_path = os.path.expanduser('./popular_music_suprise_format.txt')
+
+# 指定文件格式
+reader = Reader(line_format='user item rating timestamp', sep=',')
+
+# 从文件读取数据
+music_data = Dataset.load_from_file(file_path, reader=reader)
+
+# 构建数据集和建模
+algo = NMF()
+trainset = music_data.build_full_trainset()
+algo.train(trainset)
+
+user_inner_id = 4
+user_rating = trainset.ur[user_inner_id]
+items = map(lambda x: x[0], user_rating)
+for song in items:
+    print(algo.predict(algo.trainset.to_raw_uid(user_inner_id), algo.trainset.to_raw_iid(song), r_ui=1),
+          song_id_name_dic[algo.trainset.to_raw_iid(song)])
+
+'''
+    ##########
+    5.模型存储
+    ##########
+'''
+import surprise
+
+# 模型导出
+surprise.dump.dump('./recommendation.model', algo=algo)
+
+# 模型载入
+algo = surprise.dump.load('./recommendation.model')
+
+'''
+    ######################
+    6.不同的推荐系统算法评估
+    ######################
+'''
+# 载入数据
+import os
+from surprise import Reader, Dataset
+
+# 指定文件路径
+file_path = os.path.expanduser('./popular_music_suprise_format.txt')
+# 指定文件格式
+reader = Reader(line_format='user item rating timestamp', sep=',')
+# 从文件读取数据
+music_data = Dataset.load_from_file(file_path, reader=reader)
+# 分成5折
+music_data.split(n_folds=5)
+
+# 使用NormalPredictor
+from surprise import NormalPredictor, evaluate
+
+algo = NormalPredictor()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+
+# 使用BaselineOnly
+from surprise import BaselineOnly, evaluate
+
+algo = BaselineOnly()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+
+# 使用基础版协同过滤
+from surprise import KNNBasic, evaluate
+
+algo = KNNBasic()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+
+# 使用均值协同过滤
+from surprise import KNNWithMeans, evaluate
+
+algo = KNNWithMeans()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+
+# 使用协同过滤baseline
+from surprise import KNNBaseline, evaluate
+
+algo = KNNBaseline()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+
+# 使用SVD
+from surprise import SVD, evaluate
+
+algo = SVD()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+
+# 使用SVD++
+from surprise import SVDpp, evaluate
+
+algo = SVDpp()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+
+# 使用NMF
+from surprise import NMF
+
+algo = NMF()
+perf = evaluate(algo, music_data, measures=['RMSE', 'MAE'])
+print_perf(perf)

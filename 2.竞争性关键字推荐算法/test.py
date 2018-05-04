@@ -19,7 +19,6 @@ for i in dic:
     print(i)
 
 print(1/3)
-'''
 
 match = {}
 
@@ -44,3 +43,12 @@ for name in match:
     print(match[name])
 
 print(len(match))
+'''
+
+import jieba.posseg as pseg
+
+words = pseg.cut("宝马奔驰奥迪")
+for w in words:
+    print(w.word, w.flag)
+
+print(len('你'))

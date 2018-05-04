@@ -15,12 +15,13 @@ allwords = ''
 for row in rows:
     segs = jieba.posseg.cut(row)
     for seg in segs:
-        alldic.add(seg.word)
+        if seg.flag.find('n') != -1:
+            alldic.add(seg.word)
 
-print(len(alldic))  # >>>78444
+print(len(alldic))  # >>> 57130(n) 78444(all)
 
 # 写入文件
-write = open("140000_words.TRAIN", "w")
+write = open("140000_words_n.TRAIN", "w")
 
 for word in alldic:
     allwords = allwords + '\n' + word

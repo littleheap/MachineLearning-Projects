@@ -69,13 +69,12 @@ s = '奔驰'
 k = '奥迪'
 comp = 0
 
-# s = 奔驰
 i_s = 0
 
 for row in rows:
     split_row = row.split("\t")
     for msg in split_row:
-        if msg.find('奔驰') != -1:
+        if msg.find(s) != -1:
             i_s = i_s + 1
 
 # 遍历中介词

@@ -37,6 +37,6 @@ data = read.read()
 rows = data.split('\n')
 
 print(len(rows))
-# >>> 146731
+# >>> 146730
 
 read.close()

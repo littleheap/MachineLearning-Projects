@@ -1,7 +1,7 @@
 import jieba.posseg
 
 '''
-    整理出7W条词组中，全部5W个名词，在缩水得到1000个名词
+    整理出7W条词组中，全部5W个名词，再缩水得到1000个名词
 '''
 
 read = open('./data/Query.14W.TRAIN', 'r', encoding='gbk', errors='ignore')
@@ -25,7 +25,7 @@ print(len(alldic))  # >>> 56164
 read.close()
 
 # 写入文件
-write = open("./data/NoneWord.1000.TRAIN", "w")
+write = open("./data/NounWord.1000.TRAIN", "w")
 
 number = 0
 

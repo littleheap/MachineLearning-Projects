@@ -25,7 +25,7 @@ print(len(alldic))  # >>> 56164
 read.close()
 
 # 写入文件
-write = open("./data/NoneWord.5W.TRAIN", "w")
+write = open("./data/NounWord.5W.TRAIN", "w")
 
 for word in alldic:
     allwords = allwords + '\n' + word

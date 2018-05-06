@@ -44,6 +44,7 @@ data = read.read()
 
 rows = data.split('\n')
 
+# 输出整理后的搜索记录条数
 print(len(rows))
 # >>> 142708
 

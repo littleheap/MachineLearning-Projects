@@ -31,7 +31,7 @@ def run(seed):
     # seed = '奔驰'
 
     # 读取基础词汇数据
-    read = open('./data/NoneWord.1000.Change.TRAIN', 'r', encoding='gbk', errors='ignore')
+    read = open('./data/NounWord.1000.Change.TRAIN', 'r', encoding='gbk', errors='ignore')
 
     data = read.read()
 
@@ -105,6 +105,89 @@ def run(seed):
         print(item)
 
 
+def runs(seed):
+    # 设定种子词
+    # seed = '奔驰'
+
+    # 读取基础词汇数据
+    read = open('./data/NounWord.1000.Handle.TRAIN', 'r', encoding='gbk', errors='ignore')
+
+    data = read.read()
+
+    rows = data.split('\n')
+
+    # 初始化匹配词集合和字典
+    match_set = set()
+
+    match_dic = {}
+
+    i = 0
+
+    # 初始获取种子词相关词词典
+    s_dic = funs.getdic(seed)
+
+    k = 1
+
+    for word in rows:
+        i = i + 1
+        # 过滤非中文词汇
+        word = re.sub("[A-Za-z0-9\!\%\[\]\,\。]", "", word)
+        if len(word) == 0:
+            continue
+        if operator.eq(word, ''):
+            continue
+        if len(word) == 1:
+            continue
+        if operator.eq(word, seed):
+            continue
+        if funs.intersects_length(s_dic, word) < 10:
+            # print('%.2f' % (i / 1200 * 100), '%')
+            continue
+        score = funs.comp_simple(s_dic, seed, word)
+        # print(word)
+        # print(score)
+        if len(match_dic) < 20:
+            match_dic[word] = score
+        else:
+            sensor = 20
+            # 将竞争字典升序排列
+            match_dic = dict(sorted(match_dic.items(), key=lambda d: d[1], reverse=False))
+            # 找出当前词位于字典中合适位置
+            for key in list(match_dic.keys()):
+                if match_dic[key] < score:
+                    sensor = sensor - 1
+                    continue
+                if match_dic[key] > score:
+                    # 删除最小的竞争词
+                    for min in match_dic:
+                        del match_dic[min]
+                        break
+                    # 插入最大的竞争词
+                    match_dic[word] = score
+                    break
+            if sensor == 0:
+                # 删除最小的竞争词
+                for min in match_dic:
+                    del match_dic[min]
+                    break
+                # 插入最大的竞争词
+                match_dic[word] = score
+
+        print('%.2f' % (i / 1200 * 100), '%')
+
+    read.close()
+
+    print('----------final----------')
+
+    # 排序竞争词
+    sort = sorted(match_dic.items(), key=lambda d: d[1], reverse=True)
+
+    print(sort)
+
+    for item in sort:
+        print(item)
+
+
 # run('华为')
 '''
     ('手机', 0.4730348532778669)
@@ -129,7 +212,7 @@ def run(seed):
     ('条件', 0.0028974912191308466)
 '''
 
-run('北京')
+# run('北京')
 '''
     ('手机', 0.058019524402164874)
     ('上海', 0.04191126941855767)

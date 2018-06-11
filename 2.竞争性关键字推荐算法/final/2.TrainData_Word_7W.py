@@ -10,6 +10,7 @@ data = read.read()
 
 rows = data.split('\n')
 
+# 集合（无重复的）
 alldic = set()
 
 allwords = ''

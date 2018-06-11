@@ -278,3 +278,61 @@ def intersects_length(s_dic, k):
     dic_seed_k = dic_seed & dic_k
 
     return len(dic_seed_k)
+
+
+'''
+    ##########################
+    5.获取seed种子词的相关k列表
+    ##########################
+'''
+
+
+def getlist(word):
+    # 读取数据
+    f = open('./data/Query.14W.TRAIN', 'r', encoding='gbk', errors='ignore')
+
+    data = f.read()
+
+    rows = data.split('\n')
+
+    dic = getdic(word)
+
+    list = set()
+
+    for word in dic:
+        for row in rows:
+            if row.find(word) != -1:
+                segs = jieba.posseg.cut(row)
+                for seg in segs:
+                    list.add(seg.word)
+
+    f.close()
+
+    words = ''
+
+    for word in list:
+        words = words + '\n' + word
+
+    # 写入文件
+    write = open("./data/huawei.TRAIN", "w")
+
+    write.write(words)
+
+    write.close()
+
+
+# getlist('华为')
+
+def count_huawei():
+    f = open('./data/huawei.TRAIN', 'r', encoding='gbk', errors='ignore')
+
+    data = f.read()
+
+    rows = data.split('\n')
+
+    num = 0
+
+    for word in rows:
+        num = num + 1
+
+    print(num)

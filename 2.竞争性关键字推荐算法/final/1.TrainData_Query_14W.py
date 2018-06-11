@@ -11,7 +11,7 @@ data = read.read()
 
 rows = data.split('\n')
 
-content = ""
+content = ''
 
 number = 0
 

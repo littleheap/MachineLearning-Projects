@@ -2,14 +2,19 @@ import json
 import sys
 
 '''
-    Step 1：原始数据->歌单数据：
-        抽取 歌单名称、歌单id、收藏数、所属分类——4个歌单维度的信息
-        抽取 歌曲id、歌曲名、歌手、歌曲热度——4个维度信息歌曲的信息
+    假设：同一个歌单中的歌曲，有比较高的相似性；同时都是做单的人喜欢的
+    Step 1：原始数据->歌单数据+歌曲数据：
+        抽取：歌单名称、歌单id、收藏数、所属分类——4个歌单维度的信息
+        抽取：歌曲id、歌曲名、歌手、歌曲热度——4个维度信息歌曲的信息
         进行拼接
+        
+    效果：[歌单名称##歌单分类##歌单id##歌单收藏数    歌曲id:::歌曲名称:::歌手:::歌曲热度    歌曲id:::歌曲名称:::歌手:::歌曲热度 ...]
+    eg:
+    漫步西欧小镇上##小语种,旅行##69413685##474    18682332:::Wäg vo dir::Joy Amelie::70.0    4335372::Only When I Sleep::The Corrs::60.0    2925502::Si Seulement::Lynnsha::100.0    21014930::Tu N'As Pas Cherché...::La Grande Sophie::100.0    20932638::Du behöver aldrig mer vara rädd::Lasse Lindh::25.0    17100518::Silent Machine::Cat Power::60.0    3308096::Kor pai kon diew : ชอไปคนเดียว::Palmy::5.0    1648250::les choristes::Petits Chanteurs De Saint Marc::100.0    4376212::Paddy's Green Shamrock Shore::The High Kings::25.0    2925400::A Todo Color::Las Escarlatinas::95.0    19711402::Comme Toi::Vox Angeli::75.0    3977526::Stay::Blue Cafe::100.0    2538518::Shake::Elize::85.0    2866799::Mon Ange::Jena Lee::85.0    5191949::Je M'appelle Helene::Hélène Rolles::85.0    20036323::Ich Lieb' Dich Immer Noch So Sehr::Kate & Ben::100.0
 '''
 
 
-# 解析每一行歌单JSON数据函数
+# 解析每一条歌单JSON数据函数
 def parse_song_line(in_line):
     # 读取JSON歌单数据
     data = json.loads(in_line)
@@ -17,9 +22,9 @@ def parse_song_line(in_line):
     name = data['result']['name']
     # 获取歌单类别
     tags = ",".join(data['result']['tags'])
-    # 获取订阅数
+    # 获取收藏数
     subscribed_count = data['result']['subscribedCount']
-    # 过滤：如果订阅小于100
+    # 过滤：如果收藏数小于100
     if (subscribed_count < 100):
         return False
     # 获取歌单id
@@ -67,10 +72,10 @@ def parse_file(in_file, out_file):
 '''
 
 '''
-    Step 2：歌单数据->推荐系统格式数据：
+    Step 2：歌单+歌曲数据->推荐系统格式数据：
         主流的python推荐系统框架，支持的最基本数据格式为movielens dataset
-        其评分数据格式为 “user item rating timestamp” —— “歌单id、歌曲id、热度、时间戳”
-        为了简单，我们也把数据处理成这个格式。
+        其评分fit数据格式为 “user item rating timestamp” —— “歌单id、歌曲id、热度、时间戳”
+        为了简单，也把数据处理成这个格式
 '''
 
 import surprise
@@ -83,15 +88,18 @@ def is_null(s):
     return len(s.split(",")) > 2
 
 
+# 解析歌曲info信息
 def parse_song_info(song_info):
     try:
+        # 获取每首歌的四个特征
         song_id, name, artist, popularity = song_info.split(":::")
-        # 打分默认为 1.0
+        # 打分默认为1.0，时间戳1300000
         return ",".join([song_id, "1.0", '1300000'])
     except Exception as e:
         return ""
 
 
+# 解析歌单info信息
 def parse_playlist_line(in_line):
     try:
         # 分离歌单信息，歌曲信息
@@ -123,13 +131,14 @@ def parse_file(in_file, out_file):
 
 '''
     Step 3：保存歌单和歌曲信息备用：
-    我们需要保存 歌单id=>歌单名 和 歌曲id=>歌曲名 的信息后期备用。
+    需要保存 歌单id=>歌单名 和 歌曲id=>歌曲名 的信息后期备用。
 '''
 
 import pickle as pickle
 import sys
 
 
+# 生成歌单和歌曲id字典函数
 def parse_playlist_get_info(in_line, playlist_dic, song_dic):
     # 分离歌单信息，歌曲信息
     contents = in_line.strip().split("\t")
@@ -163,9 +172,3 @@ def parse_file(in_file, out_playlist, out_song):
 
 # parse_file("./163_music_playlist.txt", "playlist.pkl", "song.pkl")
 # parse_file("./popular.playlist", "popular_playlist.pkl", "popular_song.pkl")
-
-
-
-
-
-

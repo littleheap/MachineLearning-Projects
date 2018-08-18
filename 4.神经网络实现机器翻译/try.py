@@ -1,21 +1,33 @@
-import logging
-import numpy as np
-from collections import Counter
-import torch.nn as nn
-import torch
-import code
-import os
-import nltk
+import tensorflow as tf
 
+x = tf.constant([1, 1])
+y = tf.constant([2, 2])
+z = tf.constant([3, 3])
 
-def load_data(in_file):
-    cn = []
-    en = []
-    num_examples = 0
-    with open(in_file, 'r') as f:
-        for line in f:
-            line = line.strip().split("\t")
-            en.append(["BOS"] + nltk.word_tokenize(line[0]) + ["EOS"])
-            # split chinese sentence into characters
-            cn.append(["BOS"] + [c for c in line[1]] + ["EOS"])
-    return en, cn
+m = tf.stack([x, y, z], axis=0)
+
+a = tf.constant([4, 4])
+b = tf.constant([5, 5])
+c = tf.constant([6, 6])
+
+n = tf.stack([a, b, c], axis=0)
+
+input_m = tf.strided_slice(m, [0, 0], [2, 2])
+
+input_n = tf.strided_slice(n, [1, 0], [3, 3])
+
+output = n = tf.stack([input_m, input_n], axis=0)
+
+init_op = tf.global_variables_initializer()
+
+with tf.Session() as sess:
+    sess.run(init_op)
+    print('m:')
+    print(input_m.eval())
+    print(input_m.shape)
+    print('n:')
+    print(input_n.eval())
+    print(input_n.shape)
+    print('result:')
+    print(output.eval())
+    print(output.shape)

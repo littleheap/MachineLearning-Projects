@@ -1,0 +1,212 @@
+
+    Introduction:
+    爬取网易云音乐中80w首歌400w+次收藏的歌单，存储格式为json格式，数据大小为3.59G，格式说明如下：
+
+    ----------------------------
+    ----------------------------
+
+    1）每个歌单的格式
+    {
+        "result": {
+            "id": 111450065,
+            "status": 0,
+            "commentThreadId": "A_PL_0_111450065",
+            "trackCount": 120,
+            "updateTime": 1460164523907,
+            "commentCount": 227,
+            "ordered": true,
+            "anonimous": false,
+            "highQuality": false,
+            "subscribers": [],
+            "playCount": 687070,
+            "trackNumberUpdateTime": 1460164523907,
+            "createTime": 1443528317662,
+            "name": "带本书去旅行吧,人生最美好的时光在路上。",
+            "cloudTrackCount": 0,
+            "shareCount": 149,
+            "adType": 0,
+            "trackUpdateTime": 1494134249465,
+            "userId": 39256799,
+            "coverImgId": 3359008023885470,
+            "coverImgUrl": "http://p1.music.126.net/2ZFcuSJ6STR8WgzkIi2U-Q==/3359008023885470.jpg",
+            "artists": null,
+            "newImported": false,
+            "subscribed": false,
+            "privacy": 0,
+            "specialType": 0,
+            "description": "现在是一年中最美好的时节，世界上很多地方都不冷不热，有湛蓝的天空和清冽的空气，正是出游的好时光。长假将至，你是不是已经收拾行装准备出发了？行前焦虑症中把衣服、洗漱用品、充电器之类东西忙忙碌碌地丢进箱子，打进背包的时候，我打赌你肯定会留个位置给一位好朋友：书。不是吗？不管是打发时间，小读怡情，还是为了做好攻略备不时之需，亦或是为了小小地装上一把，你都得有一本书傍身呀。读大仲马，我是复仇的伯爵；读柯南道尔，我穿梭在雾都的暗夜；读村上春树，我是寻羊的冒险者；读马尔克斯，目睹百年家族兴衰；读三毛，让灵魂在撒哈拉流浪；读老舍，嗅着老北京的气息；读海茵莱茵，于科幻狂流遨游；读卡夫卡，在城堡中审判……读书的孩子不会孤单，读书的孩子永远幸福。",
+            "subscribedCount": 10882,
+            "totalDuration": 0,
+            "tags": [
+                "旅行",
+                "钢琴",
+                "安静"]
+            "creator": {
+                "followed": false,
+                "remarkName": null,
+                "expertTags": [
+                    "古典",
+                    "民谣",
+                    "华语"
+                ],
+                "userId": 39256799,
+                "authority": 0,
+                "userType": 0,
+                "gender": 1,
+                "backgroundImgId": 3427177752524551,
+                "city": 360600,
+                "mutual": false,
+                "avatarUrl": "http://p1.music.126.net/TLRTrJpOM5lr68qJv1IyGQ==/1400777825738419.jpg",
+                "avatarImgIdStr": "1400777825738419",
+                "detailDescription": "",
+                "province": 360000,
+                "description": "",
+                "birthday": 637516800000,
+                "nickname": "有梦人生不觉寒",
+                "vipType": 0,
+                "avatarImgId": 1400777825738419,
+                "defaultAvatar": false,
+                "djStatus": 0,
+                "accountStatus": 0,
+                "backgroundImgIdStr": "3427177752524551",
+                "backgroundUrl": "http://p1.music.126.net/LS96S_6VP9Hm7-T447-X0g==/3427177752524551.jpg",
+                "signature": "漫无目的的乱听，听着，听着，竟然灵魂出窍了。更多精品音乐美图分享请加我微信hu272367751。微信是我的精神家园，有我最真诚的分享。",
+                "authStatus": 0
+            }
+            "tracks": [{歌曲1},{歌曲2}, ...]
+         }
+    }
+
+    ----------------------------
+    ----------------------------
+
+    2）每首歌曲的格式为：
+    {
+        "id": 29738501,
+        "name": "跟着你到天边 钢琴版",
+        "duration": 174001,
+        "hearTime": 0,
+        "commentThreadId": "R_SO_4_29738501",
+        "score": 40,
+        "mvid": 0,
+        "hMusic": null,
+        "disc": "",
+        "fee": 0,
+        "no": 1,
+        "rtUrl": null,
+        "ringtone": null,
+        "rtUrls": [],
+        "rurl": null,
+        "status": 0,
+        "ftype": 0,
+        "mp3Url": "http://m2.music.126.net/vrVa20wHs8iIe0G8Oe7I9Q==/3222668581877701.mp3",
+        "audition": null,
+        "playedNum": 0,
+        "copyrightId": 0,
+        "rtype": 0,
+        "crbt": null,
+        "popularity": 40,
+        "dayPlays": 0,
+        "alias": [],
+        "copyFrom": "",
+        "position": 1,
+        "starred": false,,
+        "starredNum": 0
+        "bMusic": {
+            "name": "跟着你到天边 钢琴版",
+            "extension": "mp3",
+            "volumeDelta": 0.0553125,
+            "sr": 44100,
+            "dfsId": 3222668581877701,
+            "playTime": 174001,
+            "bitrate": 96000,
+            "id": 52423394,
+            "size": 2089713
+        },
+        "lMusic": {
+            "name": "跟着你到天边 钢琴版",
+            "extension": "mp3",
+            "volumeDelta": 0.0553125,
+            "sr": 44100,
+            "dfsId": 3222668581877701,
+            "playTime": 174001,
+            "bitrate": 96000,
+            "id": 52423394,
+            "size": 2089713
+        },
+        "mMusic": {
+            "name": "跟着你到天边 钢琴版",
+            "extension": "mp3",
+            "volumeDelta": -0.000265076,
+            "sr": 44100,
+            "dfsId": 3222668581877702,
+            "playTime": 174001,
+            "bitrate": 128000,
+            "id": 52423395,
+            "size": 2785510
+        },
+        "artists": [
+            {
+            "img1v1Url": "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
+            "name": "群星",
+            "briefDesc": "",
+            "albumSize": 0,
+            "img1v1Id": 0,
+            "musicSize": 0,
+            "alias": [],
+            "picId": 0,
+            "picUrl": "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
+            "trans": "",
+            "id": 122455
+            }
+        ],
+        "album": {
+            "id": 3054006,
+            "status": 2,
+            "type": null,
+            "tags": "",
+            "size": 69,
+            "blurPicUrl": "http://p1.music.126.net/2XLMVZhzVZCOunaRCOQ7Bg==/3274345629219531.jpg",
+            "copyrightId": 0,
+            "name": "热门华语248",
+            "companyId": 0,
+            "songs": [],
+            "description": "",
+            "pic": 3274345629219531,
+            "commentThreadId": "R_AL_3_3054006",
+            "publishTime": 1388505600004,
+            "briefDesc": "",
+            "company": "",
+            "picId": 3274345629219531,
+            "alias": [],
+            "picUrl": "http://p1.music.126.net/2XLMVZhzVZCOunaRCOQ7Bg==/3274345629219531.jpg",
+            "artists": [
+            {
+                "img1v1Url": "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
+                "name": "群星",
+                "briefDesc": "",
+                "albumSize": 0,
+                "img1v1Id": 0,
+                "musicSize": 0,
+                "alias": [],
+                "picId": 0,
+                "picUrl": "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
+                "trans": "",
+                "id": 122455
+            }
+            ],
+            "artist": {
+            "img1v1Url": "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
+            "name": "",
+            "briefDesc": "",
+            "albumSize": 0,
+            "img1v1Id": 0,
+            "musicSize": 0,
+            "alias": [],
+            "picId": 0,
+            "picUrl": "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg",
+            "trans": "",
+            "id": 0
+            }
+        }
+    }

@@ -33,18 +33,17 @@ data.split(n_folds=3)
 # 试一把SVD矩阵分解
 algo = SVD()
 
-# 在数据集上测试一下效果
+# 评估函数
 perf = evaluate(algo, data, measures=['RMSE', 'MAE'])
 
 # 输出结果
 print_perf(perf)
 
-# 载入自己的数据集方法
-
+# 载入自己的数据集方法：
 # 指定文件所在路径
 file_path = os.path.expanduser('~/.surprise_data/ml-100k/ml-100k/u.data')
 
-# 告诉文本阅读器文本的格式
+# 声明文本阅读器文本的格式
 reader = Reader(line_format='user item rating timestamp', sep='\t')
 
 # 加载数据
@@ -116,7 +115,8 @@ perf = evaluate(algo, data, measures=['RMSE', 'MAE'])
 print_perf(perf)
 
 """
-以下的程序段告诉大家如何在协同过滤算法建模以后，根据一个item取回相似度最高的item，主要是用到algo.get_neighbors()这个函数
+    以下的程序是如何在协同过滤算法建模以后，根据一个item取回相似度最高的item
+    主要是用到algo.get_neighbors()这个函数
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -127,7 +127,7 @@ from surprise import KNNBaseline
 from surprise import Dataset
 
 
-# 获取 电影名->电影id 和 电影id->电影名 的映射
+# 获取 电影名->电影id 和 电影id->电影名 的两个映射函数
 def read_item_names():
     file_name = (os.path.expanduser('~') +
                  '/.surprise_data/ml-100k/ml-100k/u.item')
@@ -142,7 +142,7 @@ def read_item_names():
     return rid_to_name, name_to_rid
 
 
-# 打印当前数据格式（稀疏的）：用户id，电影id，打分，时间戳
+# 打印原生数据格式（稀疏的）：用户id，电影id，打分，时间戳
 print(data.raw_ratings[1])
 
 # 首先用算法计算相互间的相似度
@@ -163,12 +163,12 @@ algo.train(trainset)
 # 获取 电影名->电影id 和 电影id->电影名 的映射
 rid_to_name, name_to_rid = read_item_names()
 
-# 查找Toy Story这部电影对应的rid（原始数据id）
+# 查找Toy Story这部电影对应的rid（原始数据raw id）
 toy_story_raw_id = name_to_rid['Toy Story (1995)']
 print('Toy Story的raw id：', toy_story_raw_id)
 # >>> u'1'
 
-# 查找Toy Story这部电影对应的iid（内部id）
+# 查找Toy Story这部电影对应的iid（内部inner id）
 toy_story_inner_id = algo.trainset.to_inner_iid(toy_story_raw_id)
 print('Toy Story的inner id：', toy_story_inner_id)
 # >>> 24
@@ -212,11 +212,10 @@ for movie in toy_story_neighbors:
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 import os
 import io
+import pickle
 
 from surprise import KNNBaseline, Reader
 from surprise import Dataset
-
-import pickle
 
 # 歌单id->歌单名 的映射字典
 id_name_dic = pickle.load(open("popular_playlist.pkl", "rb"))

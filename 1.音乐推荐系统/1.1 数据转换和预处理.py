@@ -48,14 +48,14 @@ def parse_song_line(in_line):
 # 解析文件函数
 def parse_file(in_file, out_file):
     out = open(out_file, 'w')
-    for line in open(in_file):
+    for line in open(in_file, encoding='utf-8'):
         result = parse_song_line(line)
         if (result):
-            out.write(result.encode('utf-8').strip() + "\n")
+            out.write(str(result.encode('utf-8').strip() + b"\n"))
     out.close()
 
 
-# parse_file("./playlist_detail_all.json", "./163_music_playlist.txt")
+# parse_file("./playlistdetail.all.json", "./163_music_playlist.txt")
 
 '''
     开发原则：

@@ -33,7 +33,9 @@ def sampleInteractions(item_id, users_with_rating, n):
     '''
         如果某个商品上用户行为特别多，可以选择适当做点下采样
     '''
+    # 某个商品的用户打分人数大于n
     if len(users_with_rating) > n:
+        # 只随机返回采样的n条打分数据
         return item_id, random.sample(users_with_rating, n)
     else:
         return item_id, users_with_rating
@@ -52,7 +54,6 @@ def calcSim(user_pair, rating_pairs):
         对每个user对，根据打分计算余弦距离，并返回共同打分的item个数
     '''
     sum_xx, sum_xy, sum_yy, sum_x, sum_y, n = (0.0, 0.0, 0.0, 0.0, 0.0, 0)
-
     for rating_pair in rating_pairs:
         sum_xx += np.float(rating_pair[0]) * np.float(rating_pair[0])
         sum_yy += np.float(rating_pair[1]) * np.float(rating_pair[1])
@@ -60,7 +61,6 @@ def calcSim(user_pair, rating_pairs):
         # sum_y += rt[1]
         # sum_x += rt[0]
         n += 1
-
     cos_sim = cosine(sum_xy, np.sqrt(sum_xx), np.sqrt(sum_yy))
     return user_pair, (cos_sim, n)
 
@@ -72,7 +72,6 @@ def cosine(dot_product, rating_norm_squared, rating2_norm_squared):
     '''
     numerator = dot_product
     denominator = rating_norm_squared * rating2_norm_squared
-
     return (numerator / (float(denominator))) if denominator else 0.0
 
 

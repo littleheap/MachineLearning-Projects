@@ -6,9 +6,6 @@ from collections import defaultdict
 from itertools import combinations
 import numpy as np
 import random
-import csv
-import pdb
-
 from pyspark import SparkContext
 
 

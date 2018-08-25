@@ -13,39 +13,43 @@ import pickle
 import math
 import nltk
 
+# python main.py --train_file data/train_mini.txt --dev_file data/test_mini.txt
 
 def main(args):
-    # load sentences (English and Chinese words)
+    # code.interact(local=locals())
+
+    # 1.加载数据
     # 加载句子
     train_en, train_cn = utils.load_data(args.train_file)
-#     dev_en, dev_cn = utils.load_data(args.dev_file)
-#     args.num_train = len(train_en)
-#     args.num_dev = len(dev_en)
-#
-#     # build English and Chinese dictionary
-#     if os.path.isfile(args.vocab_file):
-#         en_dict, cn_dict, en_total_words, cn_total_words = pickle.load(open(args.vocab_file, "rb"))
-#     else:
-#         en_dict, en_total_words = utils.build_dict(train_en)
-#         cn_dict, cn_total_words = utils.build_dict(train_cn)
-#         pickle.dump([en_dict, cn_dict, en_total_words, cn_total_words], open(args.vocab_file, "wb"))
-#
-#     args.en_total_words = en_total_words
-#     args.cn_total_words = cn_total_words
-#     # index to words dict
-#     inv_en_dict = {v: k for k, v in en_dict.items()}
-#     inv_cn_dict = {v: k for k, v in cn_dict.items()}
-#
-#     # encode train and dev sentences into indieces
-#     train_en, train_cn = utils.encode(train_en, train_cn, en_dict, cn_dict)
-#     # convert to numpy tensors
-#     train_data = utils.gen_examples(train_en, train_cn, args.batch_size)
-#
-#     dev_en, dev_cn = utils.encode(dev_en, dev_cn, en_dict, cn_dict)
-#     dev_data = utils.gen_examples(dev_en, dev_cn, args.batch_size)
-#
-#     # code.interact(local=locals())
-#
+    dev_en, dev_cn = utils.load_data(args.dev_file)
+    # 参数存储
+    args.num_train = len(train_en)
+    args.num_dev = len(dev_en)
+
+    # 2.构建单词字典
+    if os.path.isfile(args.vocab_file):
+        en_dict, cn_dict, en_total_words, cn_total_words = pickle.load(open(args.vocab_file, "rb"))
+    else:
+        # 获取字典
+        en_dict, en_total_words = utils.build_dict(train_en)
+        cn_dict, cn_total_words = utils.build_dict(train_cn)
+        pickle.dump([en_dict, cn_dict, en_total_words, cn_total_words], open(args.vocab_file, "wb"))
+    # 参数存储
+    args.en_total_words = en_total_words
+    args.cn_total_words = cn_total_words
+
+    # 翻转字典，转换为数字->单词
+    inv_en_dict = {v: k for k, v in en_dict.items()}
+    inv_cn_dict = {v: k for k, v in cn_dict.items()}
+
+    # 编码单词，单词->数字
+    train_en, train_cn = utils.encode(train_en, train_cn, en_dict, cn_dict)
+    dev_en, dev_cn = utils.encode(dev_en, dev_cn, en_dict, cn_dict)
+
+    # convert to numpy tensors
+    train_data = utils.gen_examples(train_en, train_cn, args.batch_size)
+    dev_data = utils.gen_examples(dev_en, dev_cn, args.batch_size)
+
 #     if os.path.isfile(args.model_file):
 #         model = torch.load(args.model_file)
 #     elif args.model == "EncoderDecoderModel":

@@ -216,7 +216,7 @@ def eval(model, data, args, crit):
 
         correct_count += \
             torch.sum(correct * mb_out_mask.contiguous().view(mb_out_mask.size(0) * mb_out_mask.size(1), 1)).data[0]
-        
+
     return correct_count, loss, total_num_words
 
 

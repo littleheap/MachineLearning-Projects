@@ -100,7 +100,7 @@ def prepare_data(seqs):
     for idx, seq in enumerate(seqs):
         # x矩阵对应位置赋值seq数值信息
         x[idx, :lengths[idx]] = seq
-        # mask矩阵记录当前位置有没有信息
+        # x_mask矩阵记录矩阵中某一位置有没有有效信息
         x_mask[idx, :lengths[idx]] = 1.0
     return x, x_mask
 

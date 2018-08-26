@@ -262,5 +262,3 @@ def runs(seed):
 
 # print(funs.getdic('华为'))
 
-run('北京')
-

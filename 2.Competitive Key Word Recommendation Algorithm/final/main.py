@@ -1,7 +1,7 @@
 import operator
 import re
 
-import funs
+import funcs
 
 # 复杂计算两个词竞争值
 # print(funs.comp('奔驰', '奥迪'))  # >>> 0.019

@@ -95,3 +95,7 @@ print(df.ix[:4, :7])
     3     B  
     4     C  
 '''
+
+print(df.loan_amnt != df.funded_amnt).value_counts()
+
+print(df.query('loan_amnt != funded_amnt').head(5))

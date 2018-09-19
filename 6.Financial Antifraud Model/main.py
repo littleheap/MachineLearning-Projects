@@ -581,3 +581,221 @@ print(cor[(cor > 0.55) | (cor < -0.55)])
 '''
 
 # 模型构建阶段
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
+from sklearn import ensemble
+from sklearn.preprocessing import OneHotEncoder
+
+# https://ljalphabeta.gitbooks.io/python-/content/categorical_data.html
+
+X = df.drop('loan_status', 1, inplace=False)
+print(X)  # [95210 rows x 78 columns]
+
+Y = df.loan_status
+print(Y)  # [95210 rows x 1 columns]
+
+# 填充空数据
+X.fillna(0.0, inplace=True)
+X.fillna(0, inplace=True)
+
+# 训练集&测试集
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=.3, random_state=123)
+
+# 查看数据集尺寸
+print(x_train.shape)  # (66647, 78)
+print(y_train.shape)  # (66647,)
+print(x_test.shape)  # (28563, 78)
+print(y_test.shape)  # (28563,)
+
+print(y_train.value_counts())
+'''
+    1.0    64712
+    0.0     1935
+    Name: loan_status, dtype: int64
+'''
+print(y_test.value_counts())
+'''
+    1.0    27799
+    0.0      764
+    Name: loan_status, dtype: int64
+'''
+
+# GBRT模型
+param_grid = {'learning_rate': [0.1],
+              'max_depth': [2],
+              'min_samples_split': [50, 100],
+              'n_estimators': [100, 200]
+              }
+
+est = GridSearchCV(ensemble.GradientBoostingRegressor(),
+                   param_grid, n_jobs=4, refit=True)
+
+est.fit(x_train, y_train)
+
+best_params = est.best_params_
+
+print(best_params)  # {'min_samples_split': 100, 'n_estimators': 100, 'learning_rate': 0.1, 'max_depth': 3}
+
+# 评估模型
+est = ensemble.GradientBoostingRegressor(min_samples_split=50, n_estimators=300,
+                                         learning_rate=0.1, max_depth=1, random_state=0, loss='ls').fit(x_train,
+                                                                                                        y_train)
+'''
+    CPU times: user 24.2 s, sys: 251 ms, total: 24.4 s
+    Wall time: 25.6 s
+'''
+
+print(est.score(x_test, y_test))  # 0.028311715416075908
+
+est = ensemble.GradientBoostingRegressor(min_samples_split=50, n_estimators=100,
+                                         learning_rate=0.1, max_depth=2, random_state=0, loss='ls').fit(x_train,
+                                                                                                        y_train)
+print(est.score(x_test, y_test))  # 0.029210266192750467
+
+
+def compute_ks(data):
+    sorted_list = data.sort_values(['predict'], ascending=[True])
+    total_bad = sorted_list['label'].sum(axis=None, skipna=None, level=None, numeric_only=None) / 3
+    total_good = sorted_list.shape[0] - total_bad
+    max_ks = 0.0
+    good_count = 0.0
+    bad_count = 0.0
+    for index, row in sorted_list.iterrows():
+        if row['label'] == 3:
+            bad_count += 1.0
+        else:
+            good_count += 1.0
+        val = bad_count / total_bad - good_count / total_good
+        max_ks = max(max_ks, val)
+    return max_ks
+
+
+test_pd = pd.DataFrame()
+test_pd['predict'] = est.predict(x_test)
+test_pd['label'] = y_test
+print(compute_ks(test_pd[['label', 'predict']]))  # 0.0
+
+# 前10个最重要的权重字段
+feature_importance = est.feature_importances_
+feature_importance = 100.0 * (feature_importance / feature_importance.max())
+
+indices = np.argsort(feature_importance)[-10:]
+plt.barh(np.arange(10), feature_importance[indices], color='dodgerblue', alpha=.4)
+plt.yticks(np.arange(10 + 0.25), np.array(X.columns)[indices])
+_ = plt.xlabel('Relative importance'), plt.title('Top Ten Important Variables')
+
+# XGBoost
+import xgboost as xgb
+from sklearn.ensemble import ExtraTreesRegressor, RandomForestRegressor
+
+clf2 = xgb.XGBClassifier(n_estimators=50, max_depth=1,
+                         learning_rate=0.01, subsample=0.8, colsample_bytree=0.3, scale_pos_weight=3.0,
+                         silent=True, nthread=-1, seed=0, missing=None, objective='binary:logistic',
+                         reg_alpha=1, reg_lambda=1,
+                         gamma=0, min_child_weight=1,
+                         max_delta_step=0, base_score=0.5)
+
+clf2.fit(x_train, y_train)
+print(clf2.score(x_test, y_test))  # 0.973252109372
+
+test_pd2 = pd.DataFrame()
+test_pd2['predict'] = clf2.predict(x_test)
+test_pd2['label'] = y_test
+print(compute_ks(test_pd[['label', 'predict']]))  # 0.0
+print(clf2.feature_importances_)
+'''
+    [ 0.          0.30769232  0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.05128205
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.          0.          0.          0.          0.          0.          0.
+      0.05128205  0.30769232  0.2820513   0.          0.          0.          0.
+      0.        ]
+'''
+
+# 数去前10个重要字段分布
+feature_importance = clf2.feature_importances_
+feature_importance = 100.0 * (feature_importance / feature_importance.max())
+
+indices = np.argsort(feature_importance)[-10:]
+plt.barh(np.arange(10), feature_importance[indices], color='dodgerblue', alpha=.4)
+plt.yticks(np.arange(10 + 0.25), np.array(X.columns)[indices])
+_ = plt.xlabel('Relative importance'), plt.title('Top Ten Important Variables')
+
+# 随机森林
+clf3 = RandomForestRegressor(n_jobs=-1, max_depth=10, random_state=0)
+clf3.fit(x_train, y_train)
+print(clf3.score(x_test, y_test))  # 0.0148713087517
+
+test_pd3 = pd.DataFrame()
+test_pd3['predict'] = clf3.predict(x_test)
+test_pd3['label'] = y_test
+print(compute_ks(test_pd[['label', 'predict']]))  # 0.0
+print(clf3.feature_importances_)
+
+# Top Ten
+feature_importance = clf3.feature_importances_
+feature_importance = 100.0 * (feature_importance / feature_importance.max())
+'''
+    [ 0.02588781  0.10778862  0.00734994  0.02090219  0.02231172  0.00778016
+      0.00556834  0.01097013  0.00734689  0.0017027   0.00622544  0.01140843
+      0.00530896  0.00031185  0.01135318  0.          0.01488991  0.01840559
+      0.00585621  0.00652523  0.0066759   0.00727607  0.00955013  0.01004672
+      0.01785864  0.00855197  0.00985739  0.01477432  0.02184904  0.01816184
+      0.00878854  0.02078236  0.01310288  0.00844302  0.01596395  0.01825196
+      0.01817367  0.00297759  0.00084823  0.02808718  0.02917066  0.00897034
+      0.01139324  0.01532409  0.01467681  0.0032855   0.01066291  0.00581661
+      0.00955357  0.00417743  0.01333577  0.00489264  0.0128039   0.01340195
+      0.01286394  0.01619219  0.00395603  0.00508973  0.          0.00234757
+      0.00378329  0.00502684  0.01732834  0.01178674  0.00030035  0.01189509
+      0.00942532  0.00841645  0.01571355  0.00288054  0.          0.0011667
+      0.00106548  0.00488734  0.          0.00200132  0.00062765  0.04130873
+      0.10076558  0.00022293  0.00165858  0.00308408  0.0008255   0.        ]
+'''
+
+# XTR
+clf4 = ExtraTreesRegressor(n_jobs=-1, max_depth=10, random_state=0)
+clf4.fit(x_train, y_train)
+print(clf4.score(x_test, y_test))  # 0.020808034579
+
+test_pd4 = pd.DataFrame()
+test_pd4['predict'] = clf4.predict(x_test)
+test_pd4['label'] = y_test
+print(compute_ks(test_pd[['label', 'predict']]))  # 0.0
+print(clf4.feature_importances_)
+'''
+    [ 0.00950112  0.17496689  0.00476969  0.00538677  0.00898343  0.01604885
+      0.0139889   0.00605683  0.0042762   0.00358536  0.0144985   0.00915189
+      0.00643305  0.00637134  0.0050764   0.00218012  0.00925068  0.00363339
+      0.00988441  0.00645297  0.00662444  0.00934969  0.00739012  0.00635592
+      0.00633908  0.00923972  0.01263829  0.01190224  0.00914159  0.00402144
+      0.00917841  0.01456563  0.01161155  0.01097394  0.00506868  0.00772159
+      0.00560163  0.01132941  0.00172528  0.0085601   0.01282485  0.00970629
+      0.00956066  0.00731205  0.02087289  0.00430205  0.0062769   0.00765693
+      0.00922104  0.00296456  0.00563208  0.00459181  0.0133819   0.00548208
+      0.00450864  0.0132415   0.00677772  0.00509891  0.00108962  0.00578448
+      0.00934323  0.00715127  0.01078137  0.00855071  0.00695096  0.01488993
+      0.00317962  0.00485367  0.00476553  0.00509674  0.          0.00733654
+      0.00097223  0.00380448  0.00534715  0.00356893  0.0128526   0.11944538
+      0.11758343  0.00195945  0.00225379  0.00243429  0.0007562   0.        ]
+'''
+
+# Top Ten
+feature_importance = clf4.feature_importances_
+feature_importance = 100.0 * (feature_importance / feature_importance.max())
+
+indices = np.argsort(feature_importance)[-10:]
+plt.barh(np.arange(10), feature_importance[indices], color='dodgerblue', alpha=.4)
+plt.yticks(np.arange(10 + 0.25), np.array(X.columns)[indices])
+_ = plt.xlabel('Relative importance'), plt.title('Top Ten Important Variables')
+
+indices = np.argsort(feature_importance)[-10:]
+plt.barh(np.arange(10), feature_importance[indices], color='dodgerblue', alpha=.4)
+plt.yticks(np.arange(10 + 0.25), np.array(X.columns)[indices])
+_ = plt.xlabel('Relative importance'), plt.title('Top Ten Important Variables')

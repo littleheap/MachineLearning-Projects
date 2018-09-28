@@ -11,7 +11,8 @@ from sklearn.metrics import accuracy_score, precision_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 '''
-    朴素贝叶斯:我们试试用朴素贝叶斯完成一个中文文本分类器，一般在数据量足够，数据丰富度够的情况下，用朴素贝叶斯完成这个任务，准确度还是很不错的。
+    朴素贝叶斯：尝试用朴素贝叶斯完成一个中文文本分类器，在数据量足够，数据丰富度够的情况下，
+    用朴素贝叶斯完成这个任务，准确度还可以。
 '''
 
 '''
@@ -81,7 +82,9 @@ def preprocess_text(content_lines, sentences, category):
     for line in content_lines:
         try:
             segs = jieba.lcut(line)
+            # 删除空字符
             segs = filter(lambda x: len(x) > 1, segs)
+            # 删除停止词
             segs = filter(lambda x: x not in stopwords, segs)
             sentences.append((" ".join(segs), category))
         except Exception as e:
@@ -98,10 +101,10 @@ preprocess_text(entertainment, sentences, 'entertainment')
 preprocess_text(military, sentences, 'military')
 preprocess_text(sports, sentences, 'sports')
 
-# 打乱数据
+# 打乱数据顺序
 random.shuffle(sentences)
 
-# 输出部分数据和对应分类标记
+# 输出部分分词数据和对应分类标记
 for sentence in sentences[:10]:
     print(sentence[0], sentence[1])
 '''
@@ -118,25 +121,24 @@ for sentence in sentences[:10]:
 '''
 
 # 分割训练集的测试集
-
 x, y = zip(*sentences)
 x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=1234)
 
 print(len(x_train))  # 65696
 print(len(x_test))  # 21899
 
-# 制作词袋模型
+# 制作词袋模型（构建词索引字典）
 vec = CountVectorizer(
-    analyzer='word',  # tokenise by character ngrams
-    max_features=4000,  # keep the most common 1000 ngrams
+    analyzer='word',  # 基于词而不是n-gram滑窗
+    max_features=4000,  # 取最高频4000词
 )
 
+# fit之后就算是拿到一个词-向量的映射器
 vec.fit(x_train)
 
-
+# 然后可以用vec对已有的x目标词汇进行向量特征映射
 def get_features(x):
     vec.transform(x)
-
 
 # 导入模型
 classifier = MultinomialNB()
@@ -147,9 +149,9 @@ print(classifier.score(vec.transform(x_test), y_test))  # 0.83474131238869353
 
 # 尝试提高准确率，加入抽取2-gram和3-gram的统计特征
 vec = CountVectorizer(
-    analyzer='word',  # tokenise by character ngrams
-    ngram_range=(1, 4),  # use ngrams of size 1 and 2
-    max_features=20000,  # keep the most common 1000 ngrams
+    analyzer='word',  # 基于词
+    ngram_range=(1, 4),  # 规定n-gram范围，获取更健壮的特征
+    max_features=20000,  # 取前20000高频词
 )
 vec.fit(x_train)
 
@@ -168,8 +170,10 @@ print(classifier.score(vec.transform(x_test), y_test))  # 0.87401251198684871
 
 # 引入交叉验证
 def stratifiedkfold_cv(x, y, clf_class, shuffle=True, n_folds=5, **kwargs):
+    # 依据y标签生成K折数据
     stratifiedk_fold = StratifiedKFold(y, n_folds=n_folds, shuffle=shuffle)
     y_pred = y[:]
+    # 遍历每一份数据，4折做训练，1折做验证
     for train_index, test_index in stratifiedk_fold:
         X_train, X_test = x[train_index], x[test_index]
         y_train = y[train_index]
@@ -213,9 +217,7 @@ print(text_classifier.score(x_test, y_test))  # 0.865427645098
 # SVM文本分类
 svm = SVC()
 svm.fit(vec.transform(x_train), y_train)
-
 print(svm.score(vec.transform(x_test), y_test))
-
 
 # 尝试其他特征和模型
 class TextClassifier():

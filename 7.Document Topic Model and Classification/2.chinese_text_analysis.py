@@ -5,19 +5,24 @@ import jieba.analyse as analyse
 import pandas as pd
 
 '''
-    关键词提取
-    基于 TF-IDF 算法的关键词抽取
+    关键词提取：基于TF-IDF算法（基于频度+全局抵消）
+    基本思想：如果某个词或短语在一篇文章中出现的频率TF高，并且在其他文章中很少出现，
+    则认为此词或者短语具有很好的类别区分能力，适合用来分类。
+    TFIDF实际上是：TF * IDF，TF词频(Term Frequency)，IDF逆向文件频率(Inverse Document Frequency)
+    
     jieba.analyse.extract_tags(sentence, topK=20, withWeight=False, allowPOS=())
-        sentence 为待提取的文本
-        topK 为返回几个 TF/IDF 权重最大的关键词，默认值为 20
-        withWeight 为是否一并返回关键词权重值，默认值为 False
-        allowPOS 仅包括指定词性的词，默认值为空，即不筛选
+        ·sentence：待提取的文本
+        ·topK：返回几个 TF/IDF 权重最大的关键词，默认值为 20
+        ·withWeight：是否返回关键词权重值，默认值为 False
+        ·allowPOS：仅包括指定词性的词，默认值为空，即不筛选
 '''
 # 科技新闻主题提取
 df = pd.read_csv("./data/technology_news.csv", encoding='utf-8')
 df = df.dropna()
 lines = df.content.values.tolist()
+# 拼接文本
 content = "".join(lines)
+# 使用jieba计算TF-IDF，选取权重Top20
 print("  ".join(analyse.extract_tags(content, topK=30, withWeight=False, allowPOS=())))
 '''
 用户  2016  互联网  手机  平台  人工智能  百度  2017  智能  技术  数据  360  服务  直播  产品  企业  安全  视频  移动  应用  网络  行业  游戏  机器人  电商  内容  中国  领域  通过  发展
@@ -28,29 +33,32 @@ df = pd.read_csv("./data/military_news.csv", encoding='utf-8')
 df = df.dropna()
 lines = df.content.values.tolist()
 content = "".join(lines)
+# 使用jieba计算TF-IDF，选取权重Top20
 print("  ".join(analyse.extract_tags(content, topK=30, withWeight=False, allowPOS=())))
 '''
 航母  训练  海军  中国  官兵  部队  编队  作战  10  任务  美国  导弹  能力  20  2016  军事  无人机  装备  进行  记者  我们  军队  安全  保障  12  战略  军人  日本  南海  战机
 '''
 
 '''
-    基于 TextRank 算法的关键词抽取
+    关键词抽取：基于TextRank算法
     jieba.analyse.textrank(sentence, topK=20, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v')) 
-        直接使用，接口相同，注意默认过滤词性。
+    默认过滤词性
     jieba.analyse.TextRank() 
         新建自定义TextRank 实例
-    算法论文： TextRank: Bringing Order into Texts
+    算法论文：《TextRank: Bringing Order into Texts》
     基本思想:
-        将待抽取关键词的文本进行分词
-        以固定窗口大小(默认为5，通过span属性调整)，词之间的共现关系，构建图
-        计算图中节点的PageRank，注意是无向带权图
+        ·将待抽取关键词的文本进行分词
+        ·以固定窗口大小(默认为5，通过span属性调整)，词之间的共现关系，构建图
+        ·计算图中节点的PageRank得到重要性，注意是无向带权图
 '''
 df = pd.read_csv("./data/military_news.csv", encoding='utf-8')
 df = df.dropna()
 lines = df.content.values.tolist()
 content = "".join(lines)
+# 包括动词
 print("  ".join(analyse.textrank(content, topK=20, withWeight=False, allowPOS=('ns', 'n', 'vn', 'v'))))
 print("----------------分割线----------------")
+# 排除动词
 print("  ".join(analyse.textrank(content, topK=20, withWeight=False, allowPOS=('ns', 'n'))))
 '''
 中国  海军  训练  美国  部队  进行  官兵  航母  作战  任务  能力  军事  发展  工作  国家  问题  建设  导弹  编队  记者
@@ -60,8 +68,8 @@ print("  ".join(analyse.textrank(content, topK=20, withWeight=False, allowPOS=('
 
 '''
     LDA主题模型：
-    首先我们要把文本内容处理成固定的格式，一个包含句子的list，list中每个元素是分词后的词list。类似下面这个样子：
-        [[第，一，条，新闻，在，这里],[第，二，条，新闻，在，这里],[这，是，在，做， 什么],...]
+    首先把文本内容处理成固定的格式，一个包含句子的list，list中每个元素是分词后的词list。
+    实例：[[第，一，条，新闻，在，这里],[第，二，条，新闻，在，这里],[这，是，在，做， 什么],...]
 '''
 # 载入暂停词
 stopwords = pd.read_csv("data/stopwords.txt", index_col=False, quoting=3, sep="\t", names=['stopword'],
@@ -77,13 +85,16 @@ sentences = []
 for line in lines:
     try:
         segs = jieba.lcut(line)
+        # 删除空词
         segs = filter(lambda x: len(x) > 1, segs)
+        # 删除停止词
         segs = filter(lambda x: x not in stopwords, segs)
         sentences.append(segs)
     except Exception as e:
         print(line)
         continue
-# 查看格式
+
+# 查看格式，打印第六句话每一个词
 for word in sentences[5]:
     print(word)
 '''
@@ -92,17 +103,43 @@ for word in sentences[5]:
 
 # 词袋模型
 dictionary = corpora.Dictionary(sentences)
+# 词索引映射建立
 corpus = [dictionary.doc2bow(sentence) for sentence in sentences]
+# 打印第五句话每个词的索引
 print(corpus[5])
+'''
+    [(21, 1),
+     (25, 1),
+     (54, 1),
+     (59, 1),
+     (79, 1),
+     (80, 1),
+     (81, 1),
+     (91, 1),
+     (103, 1),
+     (104, 2),
+     (105, 2),
+     (112, 1),
+     (126, 1),
+     (130, 1),
+     (131, 1),
+     (132, 1),
+     (133, 1),
+     (134, 1),
+     (135, 1),
+     (136, 1),
+     (137, 1),
+     (138, 1)]
+'''
 
 # LDA建模
 lda = gensim.models.ldamodel.LdaModel(corpus=corpus, id2word=dictionary, num_topics=20)
 
-# 查看第3号分类
+# 查看模型中第3号分类，Top5个词
 print(lda.print_topic(3, topn=5))
 # 0.040*"产品" + 0.016*"品牌" + 0.016*"消费者" + 0.015*"市场" + 0.012*"体验"
 
-# 打印所有主题
+# 打印所有主题，显示Top8个词
 for topic in lda.print_topics(num_topics=20, num_words=8):
     print(topic[1])
 '''

@@ -12,9 +12,9 @@ from gensim.models import Word2Vec
     论文指出了对一些简单的分类任务，没有必要使用太复杂的网络结构就可以取得差不多的结果。
 
     fastText论文中提到了两个tricks：
-        hierarchical softmax
+        （1）hierarchical softmax：
             类别数较多时，通过构建一个霍夫曼编码树来加速softmax layer的计算，和之前word2vec中的trick相同
-        N-gram features
+        （1）N-gram features：
             只用unigram的话会丢掉word order信息，所以通过加入N-gram features进行补充用hashing来减少N-gram的存储
 '''
 

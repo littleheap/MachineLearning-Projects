@@ -76,11 +76,11 @@ MAX_DOCUMENT_LENGTH = 100
 # 最小词频数
 MIN_WORD_FREQUENCE = 2
 # 词嵌入的维度
-EMBEDDING_SIZE = 20
+EMBEDDING_SIZE = 20  # 列特征取的维度数
 # filter个数
 N_FILTERS = 10
 # 感知野大小
-WINDOW_SIZE = 20
+WINDOW_SIZE = 20  # 囊括多少个词
 # filter的形状
 FILTER_SHAPE1 = [WINDOW_SIZE, EMBEDDING_SIZE]
 FILTER_SHAPE2 = [WINDOW_SIZE, N_FILTERS]
@@ -92,11 +92,9 @@ global n_words
 
 
 def cnn_model(features, target):
-    """
-    2层的卷积神经网络，用于短文本分类
-    """
-    # 生成词嵌入得到一个形状为[n_words, EMBEDDING_SIZE]的词表映射矩阵
-    # 接着把一批文本映射成[batch_size, sequence_length, EMBEDDING_SIZE]的矩阵形式
+    """2层的卷积神经网络，用于短文本分类"""
+    # 生成词嵌入得到一个形状为[n_words, EMBEDDING_SIZE]的词表映射矩阵，用于查找词
+    # 接着把一批文本映射成[batch_size, sequence_length, EMBEDDING_SIZE]的三维矩阵形式
     target = tf.one_hot(target, 15, 1, 0)
     word_vectors = tf.contrib.layers.embed_sequence(features, vocab_size=n_words, embed_dim=EMBEDDING_SIZE,
                                                     scope='words')
@@ -121,7 +119,9 @@ def cnn_model(features, target):
         pool2 = tf.squeeze(tf.reduce_max(conv2, 1), squeeze_dims=[1])
     # 全连接层
     logits = tf.contrib.layers.fully_connected(pool2, 15, activation_fn=None)
+    # 交叉熵优化器
     loss = tf.losses.softmax_cross_entropy(target, logits)
+    # 优化器选择Adam
     train_op = tf.contrib.layers.optimize_loss(
         loss,
         tf.contrib.framework.get_global_step(),
@@ -139,8 +139,9 @@ y_train = pd.Series(train_target)
 x_test = pd.DataFrame(test_data)[1]
 y_test = pd.Series(test_target)
 
-# VocabularyProcessor模型
+# VocabularyProcessor词汇预处理模型
 tmp = ['I am good', 'you are here', 'I am glad', 'it is great']
+# 设定最低补偿维度和最低词频
 vocab_processor = learn.preprocessing.VocabularyProcessor(10, min_frequency=1)
 print(list(vocab_processor.fit_transform(tmp)))
 '''
@@ -167,7 +168,7 @@ y_test = pd.Series(test_target)
 classifier = learn.SKCompat(learn.Estimator(model_fn=cnn_model))
 
 # 训练和预测
-classifier.fit(x_train, y_train, steps=1000)
+classifier.fit(x_train, y_train, steps=1000)  # 设定迭代次数1000
 y_predicted = classifier.predict(x_test)['class']
 score = metrics.accuracy_score(y_test, y_predicted)
 print('Accuracy: {0:f}'.format(score))  # Accuracy: 0.888625

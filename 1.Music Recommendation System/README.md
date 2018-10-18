@@ -17,5 +17,5 @@
 
 ### 效果图
 #### ·一部分简单的推荐效果算法输出结果
-<img width="600" height="400" src="./images/result.png"/>
+<img width="600" height="300" src="./images/result.png"/>
 

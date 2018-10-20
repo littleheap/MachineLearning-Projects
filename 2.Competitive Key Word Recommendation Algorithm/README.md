@@ -1,4 +1,5 @@
-## Competitive Key Word Recommendation Algorithm (竞争性关键词推荐的数据挖掘)
+## Competitive Key Word Recommendation Algorithm 
+## (竞争性关键词推荐的数据挖掘)
 
 ### 项目背景
 >  关键字推荐方法：CompKey算法主要是选取种子词s,关键词k,以及中介词a，a是既能够同时与s出现在同一查询词集合中，也能同时与k出现在同一查询词集合中，但是k,s不频繁出现在同一查询中，a越多证明s,k这两个词的竞争性也越强，也就是说，通过查找两个关键词分别和多个相同的中介关键词同时出现在统一查询中的次数越多，竞争性越高，我们就需要根据s,a来得出相应竞争度最高的k来进行广告竞争，让广告品牌了解用户搜索意图，进行相应的竞争情报分析和提出营销策略。本项目基于搜狗开源脱敏搜索数据集，在10万条搜索数据中，实现竞争性关键词的统计和提取。由于数据集过大无法上传，如有需要，私聊联系我。
@@ -43,8 +44,8 @@ Step4: 对查询日志进行搜索以确定不同时与s出现，但与某一个
 <img width="350" height="440" src="./images/result3.png"/>
 
 #### ·输出结果竞争性直观问卷调查
-<img width="600" height="350" src="./images/ask.png"/>
+<img width="600" height="370" src="./images/ask.png"/>
 
 #### ·竞争性波动统计图
-<img width="600" height="350" src="./images/statistics.png"/>
+<img width="600" height="370" src="./images/statistics.png"/>
 

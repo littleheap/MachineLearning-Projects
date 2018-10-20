@@ -34,17 +34,17 @@ Step4: 对查询日志进行搜索以确定不同时与s出现，但与某一个
 
 ### 效果图
 #### ·输出示例结果（1）
-<img width="350" height="500" src="./images/result1.png"/>
+<img width="350" height="440" src="./images/result1.png"/>
 
 #### ·输出示例结果（2）
-<img width="350" height="450" src="./images/result2.png"/>
+<img width="350" height="400" src="./images/result2.png"/>
 
 #### ·输出示例结果（3）
-<img width="350" height="480" src="./images/result3.png"/>
+<img width="350" height="440" src="./images/result3.png"/>
 
 #### ·输出结果竞争性直观问卷调查
-<img width="600" height="270" src="./images/ask.png"/>
+<img width="600" height="350" src="./images/ask.png"/>
 
 #### ·竞争性波动统计图
-<img width="600" height="280" src="./images/statistics.png"/>
+<img width="600" height="350" src="./images/statistics.png"/>
 

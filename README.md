@@ -13,3 +13,4 @@
 |[5.CTR Prediction](https://github.com/LittleHeap/MachineLearning-Projects/tree/master/5.CTR%20Prediction)|基于随机森林和XGBoost实现CTR电商点击率预估项目|
 |[6.Financial Antifraud Model](https://github.com/LittleHeap/MachineLearning-Projects/tree/master/6.Financial%20Antifraud%20Model)|一个较为基础的金融反欺诈模型的实现|
 |[7.Document Topic Model and Classification](https://github.com/LittleHeap/MachineLearning-Projects/tree/master/7.Document%20Topic%20Model%20and%20Classification)|基于目前几种基础主流的文本算法实现文本信息分析和分类|
+|[8.AutoEncoder](https://github.com/LittleHeap/MachineLearning-Projects/tree/master/8.AutoEncoder)|实现AutoEncoder自编码机|

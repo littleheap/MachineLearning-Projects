@@ -16,7 +16,7 @@
 
 ### 效果图
 #### ·特征工程中Feature特征重要性统计分布
-<img width="500" height="400" src="./images/random_forest.png"/>
+<img width="500" height="350" src="./figures/random_forest.png"/>
 
 
 

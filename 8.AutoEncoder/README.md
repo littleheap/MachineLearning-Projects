@@ -6,14 +6,20 @@
   
 ### 代码流程
 |名称|作用|
-|:-------------:|:-------------:|
+|:-------------|:-------------:|
 |simple_autoencoder|一个最基本的自编码机实现|
 |convolution_autoencoder|卷积自编码机实现|
 |denoise|深度自编码机实现降噪|
 
 ### 效果图
-#### ·特征工程中Feature特征重要性统计分布
-<img width="500" height="350" src="./figures/random_forest.png"/>
+#### ·显示MNIST数据集一个图像
+<img width="400" height="300" src="./images/target.png"/>
 
+#### ·简易自编码机实现效果
+<img width="800" height="200" src="./images/result.png"/>
 
+#### ·卷积自编码机实现效果
+<img width="800" height="200" src="./images/convolution_result.png"/>
 
+#### ·深度降噪自编码机实现效果
+<img width="800" height="200" src="./images/denoise.png"/>

@@ -9,19 +9,29 @@
 ### 代码流程
 |名称|作用|
 |:-------------|:-------------:|
-|simple_autoencoder|一个最基本的自编码机实现|
-|convolution_autoencoder|卷积自编码机实现|
-|denoise|深度自编码机实现降噪|
+|1.chinese_text_word_cloud|中文词云生成实践|
+|2.chinese_text_analysis|基于TF-IDF中文文本分析|
+|3.chinese_text_classifier|基于贝叶斯中文文本分类器|
+|4.facebook_fasttext|FastText模型有监督学习和无监督学习|
+|5.CNN_text_classification|使用CNN滑窗实现文本分类|
+|6.BOW_text_classification|词袋模型实现文本分类|
+|7.GRU_text_classification|GRU文本分类器实践|
 
 ### 效果图
-#### ·显示MNIST数据集一个图像
-<img width="400" height="300" src="./images/target.png"/>
+#### ·中文词云生成图像
+<img width="600" height="300" src="./figures/wordcloud1.png"/>
 
-#### ·简易自编码机实现效果
-<img width="800" height="200" src="./images/result.png"/>
+#### ·中文词云生成图像
+<img width="600" height="300" src="./figures/wordcloud2.png"/>
 
-#### ·卷积自编码机实现效果
-<img width="800" height="200" src="./images/convolution_result.png"/>
+#### ·目标词云生成背景主题
+<img width="300" height="300" src="./figures/entertainment.jpeg"/>
 
-#### ·深度降噪自编码机实现效果
-<img width="800" height="200" src="./images/denoise.png"/>
+#### ·基于目标背景中文词云生成图像
+<img width="400" height="400" src="./figures/wordcloud3.png"/>
+
+#### ·目标词云生成背景主题
+<img width="300" height="300" src="./figures/sports.jpeg"/>
+
+#### ·基于目标背景中文词云生成图像
+<img width="400" height="400" src="./figures/wordcloud5.png"/>

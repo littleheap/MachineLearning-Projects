@@ -6,7 +6,7 @@
   
 ### 代码流程
 |名称|作用|
-|:-------------:|:-------------:|
+|:-------------|:-------------:|
 |1.Data Transfer and Preprocess|数据格式转换和预处理|
 |2.Model Building and Training (Estimate)|基于协同滤波推荐系统模型搭建和性能评估|
 |3.Sequence Model (Song2Vec)|基于Song2Vec滑窗嵌入模型实现推荐系统|

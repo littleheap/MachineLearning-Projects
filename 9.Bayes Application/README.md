@@ -2,30 +2,34 @@
 ## (贝叶斯项目实战)
 
 ### 项目背景
->  AutoEncoder是深度学习的另外一个重要内容，并且非常有意思，神经网络通过大量数据集，进行end-to-end的训练，不断提高其准确率，而AutoEncoder通过设计encode和decode过程使输入和输出越来越接近，是一种无监督学习过程。有趣的是，我们控制encode的输出维数，就相当于强迫encode过程以低维参数学习高维特征，这导致的结果和PCA类似。AutoEncoder的目的是使输入x和输出y越相似越好，这就需要在每次输出之后，进行误差反向传播，不断优化。本项目分别实现了简易自编码机，卷积自编码机，和深层降噪自编码机。
+>  #### 贝叶斯模型优点：
+
+>> 1.对待预测样本进行预测，过程简单速度快(想想邮件分类的问题，预测就是分词后进行概率乘积，在log域直接做加法更快)。
+
+>> 2.对于多分类问题也同样很有效，复杂度也不会有大程度上升。
+
+>> 3.在分布独立这个假设成立的情况下，贝叶斯分类器效果奇好，会略胜于逻辑回归，同时我们需要的样本量也更少一点。
+
+>> 4.对于类别类的输入特征变量，效果非常好。对于数值型变量特征，我们是默认它符合正态分布的。
+
+> #### 贝叶斯模型缺点：
+
+>> 1.对于测试集中的一个类别变量特征，如果在训练集里没见过，直接算的话概率就是0了，预测功能就失效了。当然，我们前面的文章提过我们有一种技术叫做『平滑』操作，可以缓解这个问题，最常见的平滑技术是拉普拉斯估测。
+
+>> 2.朴素贝叶斯算出的概率结果，比较大小还凑合，实际物理含义别太当真。
+
+>> 3.朴素贝叶斯有分布独立的假设前提，而现实生活中这些predictor很难是完全独立的。
 
 ### 数据地址
 
-https://www.kaggle.com/c/sf-crime
+Kaggle旧金山犯罪预测数据：https://www.kaggle.com/c/sf-crime
 
-https://www.kaggle.com/c/word2vec-nlp-tutorial
+Kaggle影评情感分析数据：https://www.kaggle.com/c/word2vec-nlp-tutorial
 
 ### 代码流程
 |名称|作用|
-|:-------------:|:-------------:|
-|simple_autoencoder|一个最基本的自编码机实现|
-|convolution_autoencoder|卷积自编码机实现|
-|denoise|深度自编码机实现降噪|
-
-### 效果图
-#### ·显示MNIST数据集一个图像
-<img width="400" height="300" src="./images/target.png"/>
-
-#### ·简易自编码机实现效果
-<img width="800" height="200" src="./images/result.png"/>
-
-#### ·卷积自编码机实现效果
-<img width="800" height="200" src="./images/convolution_result.png"/>
-
-#### ·深度降噪自编码机实现效果
-<img width="800" height="200" src="./images/denoise.png"/>
+|:-------------|:-------------:|
+|1.iris_classification|莺尾花分类基于高斯分布假设建立贝叶斯模型|
+|2.sohu_news_topic_classification|搜狐新闻话题分类贝叶斯模型|
+|3.Kaggle_San_Francisco_Crime_Classification|Kaggle旧金山犯罪预测模型|
+|4.Kaggle_movie_reviewer_sentiment_analysis|Kaggle影评情感分析分类模型|

@@ -7,6 +7,21 @@ from sklearn.naive_bayes import BernoulliNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import train_test_split
 
+'''
+    依次解释一下每一列的含义：
+    
+        Date: 日期
+        Category: 犯罪类型，比如 Larceny/盗窃罪 等.
+        Descript: 对于犯罪更详细的描述
+        DayOfWeek: 星期几
+        PdDistrict: 所属警区
+        Resolution: 处理结果，比如说『逮捕』『逃了』
+        Address: 发生街区位置
+        X and Y: GPS坐标
+    
+    train.csv中的数据时间跨度为12年，包含了90w+的记录。另外，这部分数据，大家从上图上也可以看出来，大部分都是『类别』型，比如犯罪类型，比如星期几。
+'''
+
 # 用pandas载入csv训练数据，并解析第一列为日期格式
 train = pd.read_csv('./train.csv', parse_dates=['Dates'])
 test = pd.read_csv('./test.csv', parse_dates=['Dates'])
